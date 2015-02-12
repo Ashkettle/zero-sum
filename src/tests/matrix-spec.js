@@ -28,5 +28,15 @@ describe('Matrix', function () {
         matrix.set(1, 1, 100);
         expect(matrix.get(1, 1)).toBe(100);
     });
+
+    it('should be able to clone matrix', function () {
+        matrix = new Matrix(3,5);
+        //setting some random value
+        matrix.set(1,1,11);
+        matrix.set(2,2,22);
+        var clone = matrix.clone();
+        expect(clone.get(1,1)).toBe(11);
+        expect(clone.get(2,2)).toBe(22);
+    });
 });
 
