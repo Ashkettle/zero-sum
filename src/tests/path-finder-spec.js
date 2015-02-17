@@ -14,6 +14,10 @@ describe('path finder', function () {
     it('should find all paths for 2d matrix', function () {
         var matrix = new Matrix(2, 2);
         var paths = pathFinder.find(matrix, 0, 0);
+
+        //The two paths are as follows:
+        //(0,0) -> (0,1) -> (1,1) -> (1,0)
+        //(0,0) -> (1,0) -> (1,1) -> (0,1)
         expect(paths.length).toBe(2);
     });
 
