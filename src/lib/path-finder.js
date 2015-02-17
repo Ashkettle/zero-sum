@@ -3,16 +3,34 @@
 var Cell = require('./cell');
 var Matrix = require('./matrix');
 
-function findPath(startX, startY, size, isVisitedMatrix, path, paths) {
-    var up = startX - 1;
-    var down = startX + 1;
-    var left = startY - 1;
-    var right = startY + 1;
+function move(cell, size, paths, isVisitedMatrix, path) {
+    var newPath = path.slice(0);
+    newPath.push(cell);
+    var newIsVisitedMatrix = isVisitedMatrix.clone();
+    newIsVisitedMatrix.set(cell.x, cell.y, 1);
+    findPath(cell.x, cell.y, size, paths, newIsVisitedMatrix, newPath);
+}
 
-    var canMoveUp = startX > 0 && isVisitedMatrix.get(up, startY) === 0;
-    var canMoveDown = startX < size.rows - 1 && isVisitedMatrix.get(down, startY) === 0;
-    var canMoveLeft = startY > 0 && isVisitedMatrix.get(startX, left) === 0;
-    var canMoveRight = startY < size.columns - 1 && isVisitedMatrix.get(startX, right) === 0;
+function findPath(x, y, size, paths, isVisitedMatrix, path) {
+    if (!isVisitedMatrix) {
+        isVisitedMatrix = new Matrix(size.rows, size.columns);
+        isVisitedMatrix.set(x, y, 1);
+    }
+
+    path = path || [];
+    if (path.length === 0) {
+        path.push(x, y);
+    }
+
+    var up = x - 1;
+    var down = x + 1;
+    var left = y - 1;
+    var right = y + 1;
+
+    var canMoveUp = x > 0 && isVisitedMatrix.get(up, y) === 0;
+    var canMoveDown = x < size.rows - 1 && isVisitedMatrix.get(down, y) === 0;
+    var canMoveLeft = y > 0 && isVisitedMatrix.get(x, left) === 0;
+    var canMoveRight = y < size.columns - 1 && isVisitedMatrix.get(x, right) === 0;
 
     if(!canMoveUp && !canMoveDown && !canMoveLeft && !canMoveRight) {
         paths.push(path);
@@ -20,47 +38,28 @@ function findPath(startX, startY, size, isVisitedMatrix, path, paths) {
     }
 
     if (canMoveUp) {
-        var newUpPath = path.slice(0);
-        newUpPath.push(new Cell(up, startY));
-        var newUpIsVisitedMatrix = isVisitedMatrix.clone();
-        newUpIsVisitedMatrix.set(up, startY, 1);
-        findPath(up, startY, size, newUpIsVisitedMatrix, newUpPath, paths);
+        move(new Cell(up, y), size, paths, isVisitedMatrix, path);
     }
 
     if (canMoveDown) {
-        var newDownPath = path.slice(0);
-        newDownPath.push(new Cell(down, startY));
-        var newDownIsVisitedMatrix = isVisitedMatrix.clone();
-        newDownIsVisitedMatrix.set(down, startY, 1);
-        findPath(down, startY, size, newDownIsVisitedMatrix, newDownPath, paths);
+        move(new Cell(down, y), size, paths, isVisitedMatrix, path);
     }
 
     if (canMoveLeft) {
-        var newLeftPath = path.slice(0);
-        newLeftPath.push(new Cell(startX, left));
-        var newLeftIsVisitedMatrix = isVisitedMatrix.clone();
-        newLeftIsVisitedMatrix.set(startX, left, 1);
-        findPath(startX, left, size, newLeftIsVisitedMatrix, newLeftPath, paths);
+        move(new Cell(x, left), size, paths, isVisitedMatrix, path);
     }
 
     if (canMoveRight) {
-        var newRightPath = path.slice(0);
-        newRightPath.push(new Cell(startX, right));
-        var newRightIsVisitedMatrix = isVisitedMatrix.clone();
-        newRightIsVisitedMatrix.set(startX, right, 1);
-        findPath(startX, right, size, newRightIsVisitedMatrix, newRightPath, paths);
+        move(new Cell(x, right), size, paths, isVisitedMatrix, path);
     }
 }
 
 function find(matrix, startX, startY) {
     var paths = [];
     var size = matrix.size();
-    var isVisitedMatrix = new Matrix(size.rows, size.columns);
-    var path = [];
-    path.push(new Cell(startX, startY));
-    isVisitedMatrix.set(startX, startY, 1);
 
-    findPath(startX, startY, size, isVisitedMatrix, path, paths);
+    findPath(startX, startY, size, paths);
+
     return paths;
 }
 
