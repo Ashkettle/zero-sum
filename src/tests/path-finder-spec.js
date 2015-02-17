@@ -11,7 +11,7 @@ describe('path finder', function () {
         expect(paths.length).toBe(1);
     });
 
-    xit('should find all paths for 2d matrix', function () {
+    it('should find all paths for 2d matrix', function () {
         var matrix = new Matrix(2, 2);
         var paths = pathFinder.find(matrix, 0, 0);
         expect(paths.length).toBe(2);
