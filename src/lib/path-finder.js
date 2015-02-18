@@ -3,15 +3,15 @@
 var Cell = require('./cell');
 var Matrix = require('./matrix');
 
-function move(cell, size, paths, isVisitedMatrix, path) {
+function move(matrix, cell, size, paths, isVisitedMatrix, path) {
     var newPath = path.slice(0);
     newPath.push(cell);
     var newIsVisitedMatrix = isVisitedMatrix.clone();
     newIsVisitedMatrix.set(cell.x, cell.y, 1);
-    findPath(cell.x, cell.y, size, paths, newIsVisitedMatrix, newPath);
+    findPath(matrix, cell.x, cell.y, size, paths, newIsVisitedMatrix, newPath);
 }
 
-function findPath(x, y, size, paths, isVisitedMatrix, path) {
+function findPath(matrix, x, y, size, paths, isVisitedMatrix, path) {
     if (!isVisitedMatrix) {
         isVisitedMatrix = new Matrix(size.rows, size.columns);
         isVisitedMatrix.set(x, y, 1);
@@ -19,7 +19,7 @@ function findPath(x, y, size, paths, isVisitedMatrix, path) {
 
     path = path || [];
     if (path.length === 0) {
-        path.push(x, y);
+        path.push(new Cell(x, y, matrix.get(x, y)));
     }
 
     var up = x - 1;
@@ -38,19 +38,19 @@ function findPath(x, y, size, paths, isVisitedMatrix, path) {
     }
 
     if (canMoveUp) {
-        move(new Cell(up, y), size, paths, isVisitedMatrix, path);
+        move(matrix, new Cell(up, y, matrix.get(up, y)), size, paths, isVisitedMatrix, path);
     }
 
     if (canMoveDown) {
-        move(new Cell(down, y), size, paths, isVisitedMatrix, path);
+        move(matrix, new Cell(down, y, matrix.get(down, y)), size, paths, isVisitedMatrix, path);
     }
 
     if (canMoveLeft) {
-        move(new Cell(x, left), size, paths, isVisitedMatrix, path);
+        move(matrix, new Cell(x, left, matrix.get(x, left)), size, paths, isVisitedMatrix, path);
     }
 
     if (canMoveRight) {
-        move(new Cell(x, right), size, paths, isVisitedMatrix, path);
+        move(matrix, new Cell(x, right, matrix.get(x, right)), size, paths, isVisitedMatrix, path);
     }
 }
 
@@ -58,7 +58,7 @@ function find(matrix, startX, startY) {
     var paths = [];
     var size = matrix.size();
 
-    findPath(startX, startY, size, paths);
+    findPath(matrix, startX, startY, size, paths);
 
     return paths;
 }

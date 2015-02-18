@@ -27,6 +27,17 @@ Matrix.prototype.size = function () {
     };
 };
 
+Matrix.prototype.forEach = function (callback) {
+    for (var i = 0; i < this.numberOfRows; i++) {
+        for (var j = 0; j < this.numberOfColumns; j++) {
+            var shouldStop = callback(this.matrix[i][j], i, j);
+            if (shouldStop) {
+                return;
+            }
+        }
+    }
+};
+
 Matrix.prototype.clone = function () {
     var newMatrix = new Matrix(this.numberOfRows, this.numberOfColumns);
     for (var i = 0; i < this.numberOfRows; i++) {
